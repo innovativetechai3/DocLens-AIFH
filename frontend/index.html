@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        DocLens AI
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css?v=16"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+
+                <img
+                    src="/static/logo.png"
+                    alt="DocLens AI Logo"
+                >
+
+            </div>
+
+
+            <div class="brand-text">
+
+                <h1>
+                    DocLens AI
+                </h1>
+
+                <p>
+                    Evidence Grounded Document Intelligence System
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="system-status">
+
+            <span class="status-dot"></span>
+
+            Local AI System
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN PAGE-->
+
+    <main class="page-container">
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <span class="hero-badge">
+                Local RAG
+            </span>
+
+
+            <h2>
+                ◆ Ask your documents.
+                <br>
+                ◆ Get evidence grounded answers.
+            </h2>
+
+
+            <p>
+                Upload PDF documents, retrieve relevant evidence,
+                and generate grounded answers using local AI.
+            </p>
+
+        </section>
+
+
+        <!-- WORKSPACE -->
+
+        <section class="workspace-grid">
+
+
+            <!-- LEFT COLUMN -->
+
+            <div class="left-column">
+
+
+                <!-- UPLOAD DOCUMENT -->
+
+                <section class="card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <p class="section-label">
+                                DOCUMENT INGESTION
+                            </p>
+
+                            <h3>
+                                Upload Document
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <label
+                        for="fileInput"
+                        class="upload-area"
+                    >
+
+                        <div class="upload-icon">
+                            ↑
+                        </div>
+
+
+                        <strong>
+                            Choose a PDF document
+                        </strong>
+
+
+                        <span>
+                            Select a PDF to extract,
+                            chunk and index
+                        </span>
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="fileInput"
+                        accept=".pdf,application/pdf"
+                        hidden
+                    >
+
+
+                    <button
+                        id="uploadButton"
+                        class="primary-button full-width"
+                    >
+                        Upload & Index
+                    </button>
+
+
+                    <div
+                        id="uploadStatus"
+                        class="status-message"
+                    ></div>
+
+                </section>
+
+
+                <!-- DOCUMENT LIBRARY -->
+
+                <section class="card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <p class="section-label">
+                                KNOWLEDGE BASE
+                            </p>
+
+                            <h3>
+                                Document Library
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="documents">
+
+                        <div class="empty-sources">
+                            Loading document library...
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- RIGHT COLUMN -->
+
+            <div class="right-column">
+
+
+                <!-- ASK QUESTION -->
+
+                <section class="card query-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <p class="section-label">
+                                DOCUMENT QUESTION ANSWERING
+                            </p>
+
+                            <h3>
+                                Ask a Question
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="selected-document">
+
+                        <span>
+                            Selected document
+                        </span>
+
+
+                        <select
+                            id="documentSelect"
+                            aria-label="Select document"
+                        >
+
+                            <option value="">
+                                Loading documents...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="question">
+                            Question
+                        </label>
+
+
+                        <textarea
+                            id="question"
+                            rows="5"
+                            placeholder="Ask a question about the selected document..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="query-controls">
+
+
+                        <div class="form-group topk-control">
+
+                            <label for="topK">
+                                Evidence depth
+                            </label>
+
+
+                            <select id="topK">
+
+                                <option value="3">
+                                    3 chunks
+                                </option>
+
+                                <option
+                                    value="5"
+                                    selected
+                                >
+                                    5 chunks
+                                </option>
+
+                                <option value="7">
+                                    7 chunks
+                                </option>
+
+                                <option value="10">
+                                    10 chunks
+                                </option>
+
+                            </select>
+
+
+                            <small>
+                                Number of relevant document chunks
+                                supplied to the local LLM.
+                            </small>
+
+                        </div>
+
+
+                        <button
+                            id="askButton"
+                            class="primary-button ask-button"
+                        >
+                            Ask Question
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="queryStatus"
+                        class="status-message"
+                    ></div>
+
+                </section>
+
+                <!-- AI ANSWER -->
+
+                <section class="card result-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <p class="section-label">
+                                GROUNDED RESPONSE
+                            </p>
+
+                            <h3>
+                                AI Answer
+                            </h3>
+
+                        </div>
+
+
+                        <span class="answer-badge">
+                            Local LLM
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        id="answer"
+                        class="answer-content"
+                    >
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                AI
+                            </div>
+
+                            <p>
+                                Ask a question to generate
+                                an evidence-grounded answer.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- EVIDENCE & SOURCES -->
+
+                <section class="card traceability-card">
+
+                    <div class="traceability-heading">
+
+                        <div>
+
+                            <p class="section-label">
+                                TRACEABILITY
+                            </p>
+
+                            <h3>
+                                Evidence & Sources
+                            </h3>
+
+                        </div>
+
+
+                        <span class="traceability-badge">
+                            Retrieved Evidence
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        id="sources"
+                        class="sources-grid"
+                    >
+
+                        <div class="empty-sources">
+                            Retrieved evidence will appear here.
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+
+        <!-- RAG PIPELINE -->
+
+        <section class="pipeline-section">
+
+            <div class="pipeline-heading">
+
+                <p class="section-label light-label">
+                    SYSTEM ARCHITECTURE
+                </p>
+
+
+                <h3>
+                    Retrieval Augmented Generation Pipeline
+                </h3>
+
+            </div>
+
+
+            <div class="pipeline">
+
+                <span>
+                    Frontend
+                </span>
+                <b>→</b>
+                <span>
+                    FastAPI Backend
+                </span>
+                <b>→</b>
+
+                <span>
+                    PDF Text Extraction
+                </span>
+
+                <b>→</b>
+
+                <span>
+                    Chunking
+                </span>
+
+                <b>→</b>
+
+                <span>
+                    Embeddings
+                </span>
+
+                <b>→</b>
+
+                <span>
+                    Chroma Vector Store
+                </span>
+
+                <b>→</b>
+
+                <span>
+                    Semantic Retrieval
+                </span>
+
+                <b>→</b>
+
+                <span>
+                    Ollama Local LLM
+                </span>
+
+                <b>→</b>
+
+                <span>
+                    Grounded Answer + Evidence Sources
+                </span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- PROJECT INFORMATION -->
+
+    <section class="project-info-section">
+
+        <div class="project-footer-logo">
+
+            <img
+                src="/static/logo.png"
+                alt="DocLens AI Logo"
+            >
+
+        </div>
+
+
+        <h2>
+            DocLens AI
+        </h2>
+
+
+        <p class="project-tagline">
+            Evidence Grounded Document Intelligence System
+            <span>•</span>
+            Local RAG
+        </p>
+
+
+        <p class="project-vision">
+
+            <strong>
+                Our Vision:
+            </strong>
+
+            Ask. Retrieve. Ground. Trust.
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Version:
+            </strong>
+
+            1.0
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Developed By:
+            </strong>
+
+            FH
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Project Type:
+            </strong>
+
+            Retrieval Augmented Generation (RAG)
+
+        </p>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer class="project-footer">
+
+
+        <!-- COPYRIGHT BAR -->
+
+        <div class="copyright-bar">
+
+            © 2026 DocLens AI:
+            Developed for Educational Purposes
+
+        </div>
+
+
+        <!-- DEVELOPER BAR -->
+
+        <div class="developer-bar">
+
+            <span>
+                Generative AI Project:
+                By Innovative Tech
+            </span>
+
+
+            <img
+                src="/static/it-logo.png"
+                alt="Innovative Tech"
+            >
+
+        </div>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script
+        src="/static/app.js?v=14"
+    ></script>
+
+
+</body>
+
+</html>
